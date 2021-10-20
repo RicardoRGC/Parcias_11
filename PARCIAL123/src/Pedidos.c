@@ -15,8 +15,8 @@
 
 void HardcodePedidos(ePedidos lista[], int len)
 {
-	ePedidos listaHardcodeada[] = { { 2, 30, PENDIENTE, 4, 5, 5, 300 }, { 2, 40, PENDIENTE, 6, 6, 6,
-					400 }, { 2, 50, PENDIENTE, 0, 0, 0, 500 } };
+	ePedidos listaHardcodeada[] = { { 1, 30, PENDIENTE, 4, 5, 5, 300 }, { 3, 40, COMPLETADO, 6, 6, 6,
+					400 }, { 1, 50, PENDIENTE, 0, 0, 0, 500 } };
 	for (int i = 0; i < 3; i++)
 	{
 		lista[i] = listaHardcodeada[i];

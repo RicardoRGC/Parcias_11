@@ -37,6 +37,7 @@ int main(void)
 	int remover;
 	int opcion;
 	float KilosTotalesPP;
+	int opcion13;
 
 	int idPedidoCliente;
 
@@ -56,7 +57,10 @@ HardcodePedidos(listaPedidos, PEDIDOS);
 						"\n5. Procesar residuos\n6.IMPRIMIR CLIENTES PENDIENTES "
 						"\n7.Imprimir Pedidos pendientes \n8.Imprimir Pedidos procesados"
 						"\n9.Ingresar Localidad\n10 Cantidad de kilos de polipropileno reciclado promedio ."
-						"\n0. Salir\n", "error", 0, 11, REINTENTOS);
+						"\n11 cliente mas pedidos pendientes"
+						"\n12 cliente mas pedidos completado"
+						"\n13 modificar o eliminar localidad"
+						"\n0. Salir\n", "error", 0, 13, REINTENTOS);
 
 		switch (opcion)
 		{
@@ -73,7 +77,6 @@ HardcodePedidos(listaPedidos, PEDIDOS);
 			}
 			break;
 		case 2:
-
 			mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES);
 			modificarCliente(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES, TAMCARACTER,
 							&contadorLocalidad);
@@ -140,7 +143,39 @@ printf("promedio kilos: %.f",KilosTotalesPP);
 
 			break;
 		case 11:
-			ClienteMasPedidosPendiente(listaClientes, CLIENTES, listaPedidos, PEDIDOS);
+			if(!ClienteMasPedidosPendiente(listaClientes, CLIENTES, listaPedidos, PEDIDOS))
+			{
+				printf("carga exitosa");
+			}
+
+			break;
+		case 12:
+
+			ClienteMasPedidosCompletado(listaClientes, CLIENTES, listaPedidos, PEDIDOS);
+
+			break;
+		case 13:
+do{
+	getNumero(&opcion13, "\n1. modificar localidad \n2. eliminar localidad "
+							"\n0. Salir\n", "error", 0, 3, REINTENTOS);
+
+
+	switch(opcion13)
+	{
+	case 1:
+		modificarLocalidad(listaLocalidades, LOCALIDADES);
+		printLocalidades(listaLocalidades, LOCALIDADES);
+		break;
+	case 2:
+		removeLocaliad(listaLocalidades, LOCALIDADES);
+		printLocalidades(listaLocalidades, LOCALIDADES);
+		break;
+	}
+
+}while(opcion13!=0);
+
+
+
 
 			break;
 		}
@@ -148,8 +183,8 @@ printf("promedio kilos: %.f",KilosTotalesPP);
 	}
 	while (opcion != 0);
 
-	//MostrarLocalidad(listaLocalidades[1]);
 
-	puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
+
+
 	return EXIT_SUCCESS;
 }

@@ -20,6 +20,9 @@ typedef struct
 		char descripcion[50];
 		int isEmpty;
 }eLocalidad;
+int removeLocaliad(eLocalidad* listaLocalidad, int tamLocaliad);
+int modificarLocalidad(eLocalidad* listaLocalidad, int tamLocalidad);
+int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad);
 /// @param lista carga una lista de localidades
 /// @param len
 void HardcodeLocalidades (eLocalidad lista[],int len);

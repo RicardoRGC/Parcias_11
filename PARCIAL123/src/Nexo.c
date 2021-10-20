@@ -405,18 +405,17 @@ int ClienteMasPedidosPendiente(eClientes* listaClientes, int tamClientes, ePedid
 	}
 
 
-	for (int i = 0; i < tamPedidos; ++i)
+	for (int i = 0; i < tamClientes; ++i)
 	{
-		if (listaPedidos[i].isEmpty == PENDIENTE)
+		if (listaClientes[i].isEmpty == CARGADO)
 		{
-			for (int j = 0; j < tamClientes; ++j)
+			for (int j = 0; j < tamPedidos; ++j)
 			{
-				if (listaClientes[j].isEmpty == CARGADO
-								&& (contadorPedidos[j].id == listaPedidos[i].idClientes))
+				if (listaPedidos[j].isEmpty == PENDIENTE
+								&& (contadorPedidos[i].id == listaPedidos[j].idClientes))
 				{
-					contadorPedidos[i].contador2=contadorPedidos[i].contador2+1;
-					printf("%d",contadorPedidos[i].contador2);
-					printf("%s",listaClientes[j].empresa);
+					contadorPedidos[i].contador2++;
+
 
 				}
 			}
@@ -429,7 +428,7 @@ int ClienteMasPedidosPendiente(eClientes* listaClientes, int tamClientes, ePedid
 		if ((contadorPedidos[i].contador2 > maximo || bandera) && listaClientes[i].isEmpty == CARGADO)
 		{
 			maximo = contadorPedidos[i].contador2;
-			printf("%d", maximo);
+
 
 			bandera = 0;
 		}
@@ -437,15 +436,81 @@ int ClienteMasPedidosPendiente(eClientes* listaClientes, int tamClientes, ePedid
 
 	printf("cliente con mas pedidos: \n");
 
-/*	for (int i = 0; i < tamClientes; ++i)
+	for (int i = 0; i < tamClientes; ++i)
 	{
-		if (maximo == contadorPedidos[i].contador2)
+		if (maximo == contadorPedidos[i].contador2&& listaClientes[i].isEmpty==CARGADO)
 		{
+
 			printf("%s \n", listaClientes[i].empresa);
-			printf("%d \n", listaClientes[i].id);
+			retorno=0;
+
 		}
 
-	}*/
+	}
+
+	return retorno;
+}
+int ClienteMasPedidosCompletado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
+				int tamPedidos)
+{
+	eAuxiliar contadorPedidos[tamClientes];
+	int retorno;
+
+	int bandera;
+	int maximo;
+	retorno = -1;
+
+	bandera = 1;
+
+	for (int i = 0; i < tamClientes; ++i)
+	{
+		if (listaClientes[i].isEmpty == CARGADO)
+		{
+			contadorPedidos[i].contador2 = 0;
+			contadorPedidos[i].id = listaClientes[i].id;
+		}
+	}
+
+
+	for (int i = 0; i < tamClientes; ++i)
+	{
+		if (listaClientes[i].isEmpty == CARGADO)
+		{
+			for (int j = 0; j < tamPedidos; ++j)
+			{
+				if (listaPedidos[j].isEmpty == COMPLETADO
+								&& (contadorPedidos[i].id == listaPedidos[j].idClientes))
+				{
+					contadorPedidos[i].contador2++;
+
+
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < tamClientes; i++)
+	{
+
+		if ((contadorPedidos[i].contador2 > maximo || bandera) && listaClientes[i].isEmpty == CARGADO)
+		{
+			maximo = contadorPedidos[i].contador2;
+
+			bandera = 0;
+		}
+	}
+
+	printf("cliente con mas pedidos: \n");
+
+	for (int i = 0; i < tamClientes; ++i)
+	{
+		if (maximo == contadorPedidos[i].contador2 && listaClientes[i].isEmpty==CARGADO)
+		{
+			printf("%s \n", listaClientes[i].empresa);
+			retorno=0;
+		}
+
+	}
 
 	return retorno;
 }

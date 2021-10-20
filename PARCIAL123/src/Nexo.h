@@ -15,7 +15,8 @@
 #define LOCALIDADES 100
 
 #include "Pedidos.h"
-
+int ClienteMasPedidosCompletado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
+				int tamPedidos);
 int ClienteMasPedidosPendiente(eClientes* listaClientes,int tamClientes,ePedidos* listaPedidos,int tamPedidos);
 
 /// @param listaLocalidad muestra una localidad y los pedidos pendientes
