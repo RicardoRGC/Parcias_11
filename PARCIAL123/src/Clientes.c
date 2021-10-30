@@ -46,18 +46,21 @@ int InicializarArray(eClientes* list, int tam)
 
 	return retorno;
 }
-int BuscarPrimerEspacioVacio(eClientes* lista, int tam)
+int BuscarPorEstadoEnCliente(eClientes* lista, int tam, int estado)
 {
 	int index;
 	index = -1;
 	int i;
+	if (lista != NULL && tam > 0)
+	{
 	for (i = 0; i < tam; i++)
 	{
-		if (lista[i].isEmpty == VACIO) //si esta vacio
+		if (lista[i].isEmpty == estado)
 		{
 			index = i;
 			break;
 		}
+	}
 	}
 
 	return index;
@@ -88,7 +91,7 @@ int addEmployee(eClientes* list, int len, int id, char empresa[],char direccion[
 	int espacioVacio;
 
 	resultado = -1;
-	espacioVacio = BuscarPrimerEspacioVacio(list, len);  //dentro de if
+	espacioVacio= BuscarPorEstadoEnCliente(list, len, VACIO);
 
 	if ((list != 0) && (len > 0) && (espacioVacio != -1)&&(localidad!=-1)) // separar en 2 if..
 	{

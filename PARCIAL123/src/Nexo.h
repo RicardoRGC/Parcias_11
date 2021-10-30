@@ -13,10 +13,18 @@
 #define CLIENTES 100
 #define PEDIDOS 1000
 #define LOCALIDADES 100
-
 #include "Pedidos.h"
-int ClienteMasPedidosCompletado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
-				int tamPedidos);
+#include "auxiliar.h"
+int buscaMaximoEnClientes_Muestra(eClientes* listaClientes,eAuxiliar* contadorPedidos,int maximo ,int tamClientes );
+int buscarClienteEnPedido_Mostrar(ePedidos* listaPedidos,int tamPedidos,eClientes* listaClientes,int tamClientes,
+				int espacioEnCLiente);
+int contadorPedidosPendiente(eClientes* listaClientes,int tamCliente,ePedidos* listaPedidos,int tamPedidos, eLocalidad* listaLocalidad,int espacioLocalidad,
+				int *contadorPendientes);
+int contarPedidosPorCliente(ePedidos* listaPedidos, int tamPedidos,
+				int estado, eAuxiliar* listaAuxiliar, int espacioEnPedido);
+int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes, eAuxiliar* listaAuxiliar);
+int ClienteConMasPedidosPorEstado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
+				int tamPedidos,int estado,char* mensaje);
 int ClienteMasPedidosPendiente(eClientes* listaClientes,int tamClientes,ePedidos* listaPedidos,int tamPedidos);
 
 /// @param listaLocalidad muestra una localidad y los pedidos pendientes
@@ -37,7 +45,7 @@ int locadidadPedidosPendientes(eLocalidad* listaLocalidad, eClientes* listaClien
 /// @param tamClientes tamñano de lista 1
 /// @param tamPedidos
 /// @return retorna -1 error 0 correcto
-int mostrarclientesConPedido(eClientes* listaClientes, eLocalidad* listaLocalidad,
+int mostrarclientesConPedidoPendiente(eClientes* listaClientes, eLocalidad* listaLocalidad,
 				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos);
 /// @param list lista1 a modificar
 /// @param listaLocalidad lista 2 a  modificar

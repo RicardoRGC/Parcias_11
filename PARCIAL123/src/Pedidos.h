@@ -23,9 +23,12 @@ typedef struct
 	float HDPE;
 	float LDPE;
 	float PP;
-	int idINCREMENTABLE; //personal
+	int id; //personal
 
 } ePedidos;
+
+int mostrarPedidoPendiente_Completado(ePedidos* listaPedidos, eClientes* listaClientes,
+				int tamPedidos, int tamClientes, int espacioEnPedido);
 /// @param lista carga una lista de pedidos
 /// @param len
 void HardcodePedidos (ePedidos lista[],int len);
@@ -41,11 +44,11 @@ void MostrarPedidoConPlastico(ePedidos list, eClientes listaclientes);
 /// @param lista busca en la lista de pedidos si hay pendientes
 /// @param tam
 /// @return devuelve el index
-int buscarListaPendientePedidos(ePedidos* lista, int tam);
+//int buscarListaPendientePedidos(ePedidos* lista, int tam);
 /// @param lista busca en la lista cargada en pedido
 /// @param tam
 /// @return devuelve el index
-int buscarListaCargadaPedidos(ePedidos* lista, int tam);
+//int buscarListaCargadaPedidos(ePedidos* lista, int tam);
 /// @param listaPedidos
 /// @param listaClientes
 /// @param tamPedidos
@@ -57,11 +60,11 @@ int BuscarClienteEnPedido(ePedidos* listaPedidos ,eClientes listaClientes, int t
 /// @param tamPedidos
 /// @param tamClientes
 /// @return -1 error
-int printPedidosCompletado( ePedidos* listaPedidos,eClientes* listaClientes, int tamPedidos, int tamClientes);
+int printPedidosPorEstado( ePedidos* listaPedidos,eClientes* listaClientes, int tamPedidos, int tamClientes,int estado);
 /// @param lista busca en pedidos index de pedido pendiente
 /// @param tam
 /// @return devuelve el index.
-int EspacioPendientePedidos(ePedidos* lista, int tam);
+int BuscarPorEstadoPedido(ePedidos* lista, int tam, int estadoDelPedido);
 /// @param listaPedidos
 /// @param tamPedidos
 /// @param listaCliente
@@ -115,7 +118,7 @@ int InicializarArrayPedidos(ePedidos* list, int tam);
 /// @param lista busca espacio vacio en la lista de pedidos
 /// @param tam
 /// @return retorna index o -1 error
-int EspacioVacioPedidos(ePedidos* lista, int tam);
+//int EspacioVacioPedidos(ePedidos* lista, int tam);
 /// @param listaPedidos
 /// @param listaClientes
 /// @param tamPedidos

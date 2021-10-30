@@ -22,10 +22,10 @@ typedef struct
 }eLocalidad;
 int removeLocaliad(eLocalidad* listaLocalidad, int tamLocaliad);
 int modificarLocalidad(eLocalidad* listaLocalidad, int tamLocalidad);
-int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad);
+//int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad);
 /// @param lista carga una lista de localidades
 /// @param len
-void HardcodeLocalidades (eLocalidad lista[],int len);
+void CargarLocalidadesPorDefecto (eLocalidad lista[],int len);
 /// @param list inicializa el array en 0
 /// @param tam
 /// @return
@@ -39,7 +39,7 @@ int addLocalidad(eLocalidad* list, int len, int id, char localidad[]);
 /// @param lista busca espacio vacio
 /// @param tam
 /// @return retorna el index
-int BuscarPrimerEspacioVacioL(eLocalidad* lista, int tam);
+int BuscarPrimerEspacioPorEstadoLocalidad(eLocalidad* lista, int tam,int estado);
 //
 /// @param list lista a mostrar
 void MostrarLocalidad(eLocalidad list);

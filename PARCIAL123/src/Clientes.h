@@ -19,6 +19,11 @@ typedef struct
 		int idLocalidad;
 		int isEmpty;
 }eClientes;
+/// @param lista dependiendo del estado devuelve el indice
+/// @param tam
+/// @param estado se ingresa estado cargado o vacio
+/// @return retorna -1 si no encontro , indice si escontro el estado.
+int BuscarPorEstadoEnCliente(eClientes* lista, int tam, int estado);
 /// @param lista carga una lista en clientes
 /// @param len tamaño de la lista
 void HardcodeClientes (eClientes lista[],int len);
@@ -41,10 +46,7 @@ int addEmployee(eClientes* list, int len, int id, char empresa[],char direccion[
 /// @param tam
 /// @return retorna -1 error 0 correcto
 int InicializarArray(eClientes* list, int tam);
-/// @param lista  busca espacio vacio en lista
-/// @param tam
-/// @return retorna el index de espacio vacio
-int BuscarPrimerEspacioVacio(eClientes* lista, int tam);
+
 
 
 #endif /* CLIENTES_H_ */

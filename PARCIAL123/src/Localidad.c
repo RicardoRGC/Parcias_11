@@ -12,7 +12,25 @@
 #include <ctype.h>
 #include <limits.h>
 #include "Localidad.h"
-int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
+int BuscarPrimerEspacioPorEstadoLocalidad(eLocalidad* lista, int tam,int estado)
+{
+	int index;
+	index = -1;
+
+	int i;
+
+	for (i = 0; i < tam; i++)
+	{
+		if (lista[i].isEmpty == estado) //si esta vacio
+		{
+			index = i;
+			break;
+		}
+	}
+
+	return index;
+}
+/*int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
 {
 	int index;
 	index = 0;
@@ -27,7 +45,7 @@ int buscarlistaCargadaLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
 	}
 
 	return index;
-}
+}*/
 int buscarPorIdLocalidad(eLocalidad* list, int len, int id)
 {
 	int retorno = -1;
@@ -52,7 +70,7 @@ int removeLocaliad(eLocalidad* listaLocalidad, int tamLocaliad)
 
 	printLocalidades(listaLocalidad, tamLocaliad);
 
-		if (buscarlistaCargadaLocalidad(listaLocalidad, tamLocaliad))
+		if ( BuscarPrimerEspacioPorEstadoLocalidad(listaLocalidad, tamLocaliad,CARGADO)!=-1 )
 		{
 
 			if (getNumero(&idLocalidad, "\n ingrese id a eliminar", "no se puedo modifcar", 1,
@@ -94,7 +112,7 @@ int modificarLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
 
 	printLocalidades(listaLocalidad, tamLocalidad);
 
-	if (buscarlistaCargadaLocalidad(listaLocalidad, tamLocalidad))
+	if (BuscarPrimerEspacioPorEstadoLocalidad(listaLocalidad, tamLocalidad,CARGADO)!= -1)
 	{
 
 		if (getNumero(&idLocalidad, "\n ingrese id a modificar ", "no se puedo modifcar", 1,
@@ -132,7 +150,7 @@ int modificarLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
 	return retorno;
 
 }
-void HardcodeLocalidades (eLocalidad lista[],int len)
+void CargarLocalidadesPorDefecto (eLocalidad lista[],int len)
 {
     eLocalidad listaHardcodeada[] = {{1,"Avellaneda",1},{2,"Quilmes",1},{3,"Lanus",1}};
     for (int i = 0; i < 3; i++)
@@ -163,7 +181,7 @@ int CargarLocalidad(eLocalidad lista[], int tam, int* contadorId)
 	auxContador = *contadorId;
 	char localidad[TAMCARACTER];
 
-	if (BuscarPrimerEspacioVacioL(lista, tam) != -1)
+	if (BuscarPrimerEspacioPorEstadoLocalidad(lista, tam,VACIO) != -1)
 	{
 		if ((getString(localidad, TAMCARACTER, "ingrese Nombre de localidad a agregar:", "\n Error\n", REINTENTOS) == 0))
 		{
@@ -190,7 +208,7 @@ int addLocalidad(eLocalidad* list, int len, int id, char localidad[])
 	int espacioVacio;
 
 	resultado = -1;
-	espacioVacio = BuscarPrimerEspacioVacioL(list, len);
+	espacioVacio = BuscarPrimerEspacioPorEstadoLocalidad(list, len,VACIO);
 
 	if ((list != 0) && (len > 0) && (espacioVacio != -1))
 	{
@@ -204,24 +222,7 @@ int addLocalidad(eLocalidad* list, int len, int id, char localidad[])
 
 	return resultado;
 }
-int BuscarPrimerEspacioVacioL(eLocalidad* lista, int tam)
-{
-	int index;
-	index = -1;
 
-	int i;
-
-	for (i = 0; i < tam; i++)
-	{
-		if (lista[i].isEmpty == VACIO) //si esta vacio
-		{
-			index = i;
-			break;
-		}
-	}
-
-	return index;
-}
 
 int printLocalidades(eLocalidad* lista, int largo)
 {
