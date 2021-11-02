@@ -11,48 +11,84 @@
 #include <limits.h>
 #include "Clientes.h"
 #include "Pedidos.h"
-#include "auxiliar.h"
 
 void HardcodePedidos(ePedidos lista[], int len)
 {
-	ePedidos listaHardcodeada[] = { { 4, 30, COMPLETADO, 4, 5, 5, 300 }, { 1, 40, COMPLETADO, 6, 6, 6,
-					400 }, { 4, 50, COMPLETADO, 0, 0, 0, 500 } };
+	ePedidos listaHardcodeada[] = { { 4, 30, PENDIENTE, 4, 5, 5, 300 }, { 1, 40, PENDIENTE, 6, 6, 6,
+					400 }, { 4, 50, PENDIENTE, 0, 0, 0, 500 } };
 	for (int i = 0; i < 3; i++)
 	{
 		lista[i] = listaHardcodeada[i];
 	}
 }
+int cargarAuxilarPedidos(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClientes,
+				int tamClientes, eAuxiliar* listaAux)
+{
+	int rtn = -1;
 
+	for (int i = 0; i < tamPedidos; i++)
+	{
+		if (listaPedidos[i].isEmpty == COMPLETADO)
+		{
+			listaAux[i].contador = listaPedidos[i].PP;
+			listaAux[i].id = listaPedidos[i].id;
+			rtn = 0;
+		}
+
+	}
+
+	return rtn;
+}
+
+int sumarContadoresAux(ePedidos* listaPedidos, int tamPedidos, eAuxiliar* listaAux,
+				float* auxContadorKilos)
+{
+	int rtn = -1;
+	for (int i = 0; i < tamPedidos; i++)
+	{
+		if (listaPedidos[i].isEmpty == COMPLETADO)
+		{
+			*auxContadorKilos += listaAux[i].contador;
+			rtn = 0;
+		}
+	}
+	return rtn;
+}
 float cantidadKilos(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClientes,
 				int tamClientes)
 {
-	float retorno = 0;
+	float retorno = -1;
 	float auxContadorKilos;
 	float auxContadorClientes;
-	//int espacioEnPedido;
 
 	auxContadorClientes = 0;
 	auxContadorKilos = 0;
 	eAuxiliar contadorkilos[tamPedidos];
-//eAuxiliar contadorClientes[tamClientes];
 
-	for (int i = 0; i < tamPedidos; i++)
+	if (cargarAuxilarPedidos(listaPedidos, tamPedidos, listaClientes, tamClientes, contadorkilos)
+					!= -1
+					&& sumarContadoresAux(listaPedidos, tamPedidos, contadorkilos, &auxContadorKilos) != -1
+					&& contClientesPedidosCompletadosPP(listaPedidos, tamPedidos, listaClientes, tamClientes,
+									&auxContadorClientes) != -1)
 	{
-		if (listaPedidos[i].isEmpty == COMPLETADO)
-		{
-			contadorkilos[i].contador = listaPedidos[i].PP;r
-			contadorkilos[i].id = listaPedidos[i].id;
-		}
 
-	}
-	for (int i = 0; i < tamPedidos; i++)
-	{
-		if (listaPedidos[i].isEmpty == COMPLETADO)
+		if (auxContadorKilos != 0)
 		{
-			auxContadorKilos += contadorkilos[i].contador;
+			printf("Cantidad de kilos Totales %.2f kilos\n", auxContadorKilos);
 
 		}
 	}
+
+	retorno = auxContadorKilos / auxContadorClientes;
+
+	return retorno;
+
+}
+int contClientesPedidosCompletadosPP(ePedidos* listaPedidos, int tamPedidos,
+				eClientes* listaClientes, int tamClientes, float* auxContadorClientes)
+{
+	int rtn = -1;
+	int contador = *auxContadorClientes;
 
 	for (int i = 0; i < tamClientes; i++) //clientes
 	{
@@ -63,31 +99,19 @@ float cantidadKilos(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClie
 				if (listaClientes[i].id == listaPedidos[j].idClientes&& (listaPedidos[j].PP > 0)
 				&& listaPedidos[j].isEmpty==COMPLETADO)
 				{
-					auxContadorClientes++;
+					contador++;
 
+					rtn = 0; // retornar contador.
+					break;
 				}
 			}
 
 		}
 	}
+	*auxContadorClientes = contador;
 
-	if (auxContadorClientes != 0)
-	{
-		printf("clientes total %.f \n", auxContadorClientes);
-
-	}
-	if (auxContadorKilos != 0)
-	{
-		printf("Cantidad de kilos Totales %.2f kilos\n", auxContadorKilos);
-
-	}
-
-	retorno = auxContadorKilos / auxContadorClientes;
-
-	return retorno;
-
+	return rtn;
 }
-
 int InicializarArrayPedidos(ePedidos* list, int tam)
 {
 	int retorno;
@@ -243,7 +267,6 @@ int BuscarPorEstadoPedido(ePedidos* lista, int tam, int estadoDelPedido)
 {
 	int index;
 	index = -1;
-
 	int i;
 
 	for (i = 0; i < tam; i++)
@@ -365,11 +388,11 @@ int printPedidosPorEstado(ePedidos* listaPedidos, eClientes* listaClientes, int 
 		{
 			if (listaPedidos[i].isEmpty == estado)
 			{
-				if(mostrarPedidoPendiente_Completado(listaPedidos, listaClientes, tamPedidos, tamClientes, i)!=-1)
+				if (mostrarPedidoPendiente_Completado(listaPedidos, listaClientes, tamPedidos, tamClientes,
+								i) != -1)
 				{
-					retorno=0;
+					retorno = 0;
 				}
-
 
 			}
 
@@ -377,44 +400,6 @@ int printPedidosPorEstado(ePedidos* listaPedidos, eClientes* listaClientes, int 
 	}
 	return retorno;
 }
-/*
- int printPedidosPendiente(ePedidos* listaPedidos, eClientes* listaClientes, int tamPedidos,
- int tamClientes)
- {
- int retorno = -1;
- //int espacioCLiente;
-
- if (listaPedidos != NULL && tamPedidos > 0)
- {
- printf("              LISTA PEDIDOS\n"
- "----------------------------------------------------------\n"
- "IDPEDIDO         CUIT          DIRECCION       KILOS                  \n"
- "-----------------------------------------------------------\n");
- for (int i = 0; i < tamPedidos; i++) //pedidos
- {
- if (listaPedidos[i].isEmpty == PENDIENTE)
- {
- for (int j = 0; j < tamClientes; j++)
- {
-
-
-
-
- if (listaPedidos[i].idClientes == listaClientes[j].id&& listaClientes[j].isEmpty==CARGADO)
- {
-
- MostrarPedido(listaPedidos[i], listaClientes[j]);
- retorno = 0;
- }
- }
- }
-
- //espacioCLiente = BuscarIgualesPyC(listaPedidos[i], listaClientes, tamPedidos, tamClientes);
- }
- }
- return retorno;
- }
- */
 int BuscarClienteEnPedido(ePedidos* listaPedidos, eClientes listaClientes, int tamPedidos,
 				int tamClientes)
 {

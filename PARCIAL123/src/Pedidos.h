@@ -15,6 +15,8 @@
 #define TAMCARACTER 50
 #define PEDIDOS 1000
 #define CLIENTES 100
+#include "auxiliar.h"
+
 typedef struct
 {
 	int idClientes; // comparte con cliente
@@ -27,6 +29,12 @@ typedef struct
 
 } ePedidos;
 
+
+int contClientesPedidosCompletadosPP(ePedidos* listaPedidos, int tamPedidos,
+				eClientes* listaClientes, int tamClientes,float* auxContadorClientes);
+int sumarContadoresAux(ePedidos* listaPedidos, int tamPedidos, eAuxiliar* listaAux, float* auxContadorKilos);
+int cargarAuxilarPedidos(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClientes,
+				int tamClientes, eAuxiliar* listaAux);
 int mostrarPedidoPendiente_Completado(ePedidos* listaPedidos, eClientes* listaClientes,
 				int tamPedidos, int tamClientes, int espacioEnPedido);
 /// @param lista carga una lista de pedidos

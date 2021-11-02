@@ -15,13 +15,18 @@
 #define LOCALIDADES 100
 #include "Pedidos.h"
 #include "auxiliar.h"
+int RecorreClientes_cuentaPedidos(eClientes* listaClientes, eLocalidad listaLocalidad,
+				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos);
+int contadorPedidos(eClientes listaClientes, int tamCliente, ePedidos* listaPedidos,
+				int tamPedidos, int estado);
 int buscaMaximoEnClientes_Muestra(eClientes* listaClientes,eAuxiliar* contadorPedidos,int maximo ,int tamClientes );
 int buscarClienteEnPedido_Mostrar(ePedidos* listaPedidos,int tamPedidos,eClientes* listaClientes,int tamClientes,
 				int espacioEnCLiente);
-int contadorPedidosPendiente(eClientes* listaClientes,int tamCliente,ePedidos* listaPedidos,int tamPedidos, eLocalidad* listaLocalidad,int espacioLocalidad,
-				int *contadorPendientes);
-int contarPedidosPorCliente(ePedidos* listaPedidos, int tamPedidos,
-				int estado, eAuxiliar* listaAuxiliar, int espacioEnPedido);
+int contadorPedidosPorEstado(eClientes* listaClientes,int tamCliente,ePedidos* listaPedidos,int tamPedidos,
+				eLocalidad* listaLocalidad,int espacioLocalidad,int estado
+				);
+int contarPedidosPorClienteAux(ePedidos* listaPedidos, int tamPedidos,
+				int estado, eAuxiliar listaAuxiliar);
 int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes, eAuxiliar* listaAuxiliar);
 int ClienteConMasPedidosPorEstado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
 				int tamPedidos,int estado,char* mensaje);
@@ -36,7 +41,7 @@ int ClienteMasPedidosPendiente(eClientes* listaClientes,int tamClientes,ePedidos
 /// @return
 /// muestra pedidos por localidad pendientes
 int locadidadPedidosPendientes(eLocalidad* listaLocalidad, eClientes* listaClientes,
-				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos);
+				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos,int idlocali);
 
 /// @param listaClientes listas1 a mostrar
 /// @param listaLocalidad lista 2 a mostrar

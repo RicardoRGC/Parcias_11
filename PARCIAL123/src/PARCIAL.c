@@ -32,14 +32,14 @@ int main(void)
 {
 	setbuf(stdout, NULL);
 	int contadorID = 5;
-	int contadorLocalidad = 20;
+	int contadorLocalidadID = 9;
 	int contadorPedidos = 0;
 	int remover;
 	int opcion;
 	float KilosTotalesPP;
 	int opcion13;
-
-	int idPedidoCliente;
+	int idlocali;
+	int idPedidoCliente; ///probar con estatica
 
 	eClientes listaClientes[CLIENTES];
 	eLocalidad listaLocalidades[LOCALIDADES];
@@ -50,14 +50,21 @@ int main(void)
 	HardcodeClientes(listaClientes, CLIENTES);
 	HardcodePedidos(listaPedidos, PEDIDOS);
 
+
 	CargarLocalidadesPorDefecto(listaLocalidades, LOCALIDADES);
 	do
 	{
 
-		getNumero(&opcion, "\n1. ALTAS \n2. MODIFICAR \n3. BAJA\n4. PEDIDOS"
-						"\n5. Procesar residuos\n6.IMPRIMIR CLIENTES PENDIENTES "
-						"\n7.Imprimir Pedidos pendientes \n8.Imprimir Pedidos procesados"
-						"\n9.Ingresar Localidad\n10 Cantidad de kilos de polipropileno reciclado promedio ."
+		getNumero(&opcion, "\n1. ALTAS "
+						"\n2. MODIFICAR "
+						"\n3. BAJA"
+						"\n4. PEDIDOS"
+						"\n5. Procesar residuos"
+						"\n6.Imprimir Cliente y cantidad de pedidos pendientes "
+						"\n7.Imprimir Pedidos pendientes "
+						"\n8.Imprimir Pedidos procesados"
+						"\n9.Cantidad de pedidos pendientes por Localidad"
+						"\n10 Cantidad de kilos de polipropileno reciclado promedio ."
 						"\n11 cliente mas pedidos pendientes"
 						"\n12 cliente mas pedidos completado"
 						"\n13 modificar o eliminar localidad"
@@ -68,36 +75,39 @@ int main(void)
 		case 1:
 
 			if (CargarCliente(listaClientes, listaLocalidades, LOCALIDADES, CLIENTES, &contadorID,
-							&contadorLocalidad, TAMCARACTER) == -1)
+							&contadorLocalidadID, TAMCARACTER) == -1)
 			{
-				printf("ERROR AL CARGAR, Lista llena o Nula");
+				printf("ERROR AL CARGAR");
 			}
 			else
 			{
-				mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES);
+				mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES);
 			}
 			break;
 		case 2:
-			if (BuscarPorEstadoEnCliente(listaClientes, CLIENTES, CARGADO) != -1)
+			if (BuscarPorEstadoEnCliente(listaClientes, CLIENTES, CARGADO) != -1&&
+							mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES)!=-1&&
+							modificarCliente(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES, TAMCARACTER,
+															&contadorLocalidadID)!=-1&&
+															mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES)!=-1)
 			{
-				mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES);
-				modificarCliente(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES, TAMCARACTER,
-								&contadorLocalidad);
-				mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES);
+
+				printf("Modificacion exitosa");
+
 			}
 			else
 			{
-				printf("lista cliente vacia o Nula");
+				printf("Error al modificar");
 			}
 
 			break;
 		case 3:
 
 			if (buscarlistaCargada(listaClientes, CLIENTES) == 1
-							&& mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES) != -1)
+							&& mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES) != -1)
 			{
-				if (getNumero(&remover, "ingrese id a eliminar\n", "error\n", 0, contadorID, REINTENTOS) != -1
-								&& removeCliente(listaClientes, CLIENTES, remover) != -1
+				if (getNumero(&remover, "ingrese id a eliminar\n", "error\n", 0, contadorID, REINTENTOS)
+								!= -1 && removeCliente(listaClientes, CLIENTES, remover) != -1
 								&& mostarclientes(listaClientes, listaLocalidades, 3, CLIENTES) != -1)
 				{
 
@@ -118,19 +128,21 @@ int main(void)
 			break;
 		case 4:	//cargar pedido
 
-			if (mostarclientes(listaClientes, listaLocalidades, contadorLocalidad, CLIENTES) != -1
+			if (mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES) != -1
 							&& buscarlistaCargada(listaClientes, CLIENTES) == 1
-							&& !getNumero(&idPedidoCliente, "ingrese id cliente", " ERROR Id Incorrecto \n ", 0, contadorID,
-							REINTENTOS))
+							&& !getNumero(&idPedidoCliente, "ingrese id cliente", " ERROR Id Incorrecto \n ", 0,
+											contadorID,
+											REINTENTOS))
 			{
-if(CargarPedidos(listaPedidos, PEDIDOS, &contadorPedidos, listaClientes, CLIENTES,idPedidoCliente)!=-1)
-{
-				//printPedidosPendiente(listaPedidos, listaClientes, PEDIDOS, CLIENTES);
-}
-else
-{
-	printf("no se pudo cargar el pedido");
-}
+				if (CargarPedidos(listaPedidos, PEDIDOS, &contadorPedidos, listaClientes, CLIENTES,
+								idPedidoCliente) != -1)
+				{
+					//printPedidosPendiente(listaPedidos, listaClientes, PEDIDOS, CLIENTES);
+				}
+				else
+				{
+					printf("no se pudo cargar el pedido");
+				}
 
 			}
 			break;
@@ -149,7 +161,6 @@ else
 		case 6:
 			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, PENDIENTE) != -1)
 			{
-
 				mostrarclientesConPedidoPendiente(listaClientes, listaLocalidades, listaPedidos,
 				LOCALIDADES, CLIENTES,
 				PEDIDOS);
@@ -161,9 +172,9 @@ else
 			}
 			break;
 		case 7:
-			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, PENDIENTE)!=-1)
+			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, PENDIENTE) != -1)
 			{
-				printPedidosPorEstado(listaPedidos, listaClientes, PEDIDOS, CLIENTES,PENDIENTE);
+				printPedidosPorEstado(listaPedidos, listaClientes, PEDIDOS, CLIENTES, PENDIENTE);
 				//printPedidosPendiente(listaPedidos, listaClientes, PEDIDOS, CLIENTES);
 			}
 			else
@@ -173,9 +184,9 @@ else
 
 			break;
 		case 8:
-			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, COMPLETADO)!=-1)
+			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, COMPLETADO) != -1)
 			{
-				printPedidosPorEstado(listaPedidos, listaClientes, PEDIDOS, CLIENTES,COMPLETADO);
+				printPedidosPorEstado(listaPedidos, listaClientes, PEDIDOS, CLIENTES, COMPLETADO);
 			}
 			else
 			{
@@ -183,11 +194,21 @@ else
 			}
 			break;
 		case 9:
-			if (buscarlistaCargada(listaClientes, CLIENTES) == 1)
+			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, PENDIENTE) != -1
+							&& printLocalidades(listaLocalidades, LOCALIDADES)!=-1
+							&&getNumero(&idlocali, "ingrese id localidad", "error", 1, LOCALIDADES, REINTENTOS)!=-1)
 			{
-				printLocalidades(listaLocalidades, LOCALIDADES);
-				locadidadPedidosPendientes(listaLocalidades, listaClientes, listaPedidos, LOCALIDADES,
-				CLIENTES, PEDIDOS);
+
+				printf("                  LISTA DE LOCALIDADES\n"
+								"----------------------------------------------------------\n"
+								"ID    localidad   \n"
+								"-----------------------------------------------------------\n");
+
+			}
+			if(	locadidadPedidosPendientes(listaLocalidades, listaClientes, listaPedidos, LOCALIDADES,
+							CLIENTES, PEDIDOS,idlocali)==-1)
+			{
+				printf("error al cargar");
 			}
 			break;
 		case 10:
@@ -237,12 +258,28 @@ else
 				switch (opcion13)
 				{
 				case 1:
-					modificarLocalidad(listaLocalidades, LOCALIDADES);
-					printLocalidades(listaLocalidades, LOCALIDADES);
+					if (modificarLocalidad(listaLocalidades, LOCALIDADES) != -1
+									&& printLocalidades(listaLocalidades, LOCALIDADES) != -1)
+					{
+						printf("modificacion exitosa");
+					}
+					else
+					{
+						printf("error al modificar");
+					}
+
 					break;
 				case 2:
-					removeLocaliad(listaLocalidades, LOCALIDADES);
-					printLocalidades(listaLocalidades, LOCALIDADES);
+					if (removeLocaliad(listaLocalidades, LOCALIDADES) != -1
+									&& printLocalidades(listaLocalidades, LOCALIDADES) != -1)
+					{
+						printf("borrado exitoso");
+					}
+					else
+					{
+						printf("error al borrar");
+					}
+
 					break;
 				}
 

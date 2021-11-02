@@ -152,8 +152,16 @@ int modificarLocalidad(eLocalidad* listaLocalidad, int tamLocalidad)
 }
 void CargarLocalidadesPorDefecto (eLocalidad lista[],int len)
 {
-    eLocalidad listaHardcodeada[] = {{1,"Avellaneda",1},{2,"Quilmes",1},{3,"Lanus",1}};
-    for (int i = 0; i < 3; i++)
+    eLocalidad listaHardcodeada[] = {{1,"Avellaneda",1},
+    				{2,"Quilmes",1},
+						{3,"Lanus",1},
+						{4,"Gerly",1},
+						{5,"Temperley",1},
+						{6,"Lomas de Zamora",1},
+						{7,"Banfield",1},
+						{8,"R. de Escalada",1}};
+
+    for (int i = 0; i < len; i++)
     {
         lista[i]=listaHardcodeada[i];
     }

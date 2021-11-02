@@ -13,6 +13,7 @@
 #include "Localidad.h"
 #include "Nexo.h"
 #include "Pedidos.h"
+static int nuevoID();
 
 /*int localidadEnClientes(eClientes* listaClientes, eLocalidad listaLocalidad, int tamLocalidad,
  int tamclientes)
@@ -28,18 +29,11 @@
  return retorno;
  }*/
 int locadidadPedidosPendientes(eLocalidad* listaLocalidad, eClientes* listaClientes,
-				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos)
+				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos, int idlocali)
 {
 	int retorno = -1;
-	int idlocali;
+
 	int contadorPendientes = 0;
-
-	getNumero(&idlocali, "ingrese id localidad", "error", 1, LOCALIDADES, REINTENTOS);
-
-	printf("                  LISTA DE LOCALIDADES\n"
-					"----------------------------------------------------------\n"
-					"ID    localidad   \n"
-					"-----------------------------------------------------------\n");
 
 	if (listaLocalidad != NULL && tamLocalidad > 0)
 	{
@@ -50,9 +44,9 @@ int locadidadPedidosPendientes(eLocalidad* listaLocalidad, eClientes* listaClien
 				MostrarLocalidad(listaLocalidad[i]); //localidades
 				printf("\n------------PEDIDOS PENDIENTES--------------\n");
 
-				contadorPedidosPendiente(listaClientes, tamClientes, listaPedidos, tamPedidos,
-								listaLocalidad, i, &contadorPendientes);
-
+				contadorPendientes = contadorPedidosPorEstado(listaClientes, tamClientes, listaPedidos,
+								tamPedidos, listaLocalidad, i, PENDIENTE); ///sacar index
+				retorno = 0;
 
 			}
 
@@ -66,36 +60,46 @@ int locadidadPedidosPendientes(eLocalidad* listaLocalidad, eClientes* listaClien
 
 	return retorno;
 }
-int contadorPedidosPendiente(eClientes* listaClientes, int tamCliente, ePedidos* listaPedidos,
-				int tamPedidos, eLocalidad* listaLocalidad, int espacioLocalidad, int* contadorPendientes)
+int contadorPedidosPorEstado(eClientes* listaClientes, int tamCliente, ePedidos* listaPedidos,
+				int tamPedidos, eLocalidad* listaLocalidad, int espacioLocalidad, int estado)
 {
-	int retorno = -1;
-	int contador = *contadorPendientes;
+	int contador = 0;
 
 	for (int j = 0; j < tamCliente; j++)
 	{
 		if (listaClientes[j].idLocalidad
 						== listaLocalidad[espacioLocalidad].idLocalidad&& listaClientes[j].isEmpty==CARGADO)
 		{
-
-			for (int k = 0; k < tamPedidos; k++) //pedidos
-			{
-				if (listaPedidos[k].idClientes == listaClientes[j].id&& listaPedidos[k].isEmpty==PENDIENTE)
-				{
-					contador++;
-
-					retorno = 0;
-
-				}
-			}
-
+//contador pedidos
+			contador = contadorPedidos(listaClientes[j], tamCliente, listaPedidos, tamPedidos, estado);
 		}
-		*contadorPendientes = contador;
+
 	}
-	return retorno;
+
+	return contador;
+}
+int contadorPedidos(eClientes listaClientes, int tamCliente, ePedidos* listaPedidos,
+				int tamPedidos, int estado)
+{
+	int contador = 0;
+	for (int k = 0; k < tamPedidos; k++) //pedidos
+	{
+		if (listaPedidos[k].idClientes == listaClientes.id
+						&& listaPedidos[k].isEmpty == estado)
+		{
+			contador++;
+		}
+	}
+	return contador;
+}
+static int nuevoID()
+{
+	static int id=0;
+	id++;
+	return id;
 }
 int CargarCliente(eClientes lista[], eLocalidad listLocalidad[], int tamLocalidad, int tam,
-				int* contadorId, int* contadorLocalidad, int limitCarac)
+				int* contadorId, int* contadorLocalidadID, int limitCarac)
 {
 	int retorno = -1;
 	int auxContador;
@@ -104,22 +108,23 @@ int CargarCliente(eClientes lista[], eLocalidad listLocalidad[], int tamLocalida
 	int localidad;
 	double cuit;
 	int opcion;
-	int auxLocalidad = *contadorLocalidad;
+	int auxLocalidad = *contadorLocalidadID;
 	auxContador = *contadorId;
 
-	if (BuscarPorEstadoEnCliente(lista, tam, VACIO) != -1)
+	if (BuscarPorEstadoEnCliente(lista, tam, VACIO) != -1
+					&& printLocalidades(listLocalidad, tamLocalidad) != -1)
 	{
-		printLocalidades(listLocalidad, tamLocalidad);
+
 		if ((getNumero(&opcion, "Ingrese id localidad  o '0' para agregar Localidad", " \nERROR", 0,
 						auxLocalidad,
-						REINTENTOS) == 0))
+						REINTENTOS) != -1))
 		{
 			if (opcion == 0)
 			{
 				if (CargarLocalidad(listLocalidad, tamLocalidad, &auxLocalidad) == 0)
 				{
 
-					*contadorLocalidad = auxLocalidad;
+					*contadorLocalidadID = auxLocalidad;
 					printLocalidades(listLocalidad, tamLocalidad);
 
 					if (!getNumero(&localidad, "Ingrese id de localidad", "\n Error\n", 1, auxLocalidad,
@@ -136,28 +141,25 @@ int CargarCliente(eClientes lista[], eLocalidad listLocalidad[], int tamLocalida
 
 			}
 
-		}
-		if (getString(empresa, limitCarac, "Ingrese Empresa", "\n Error\n", REINTENTOS) == 0
-						&& getStringDireccion(direccion, limitCarac, "Ingrese Direccion", "\n Error\n",
-						REINTENTOS) == 0
-						&& (getNumeroCuit(&cuit, "Ingrese cuit, 11 digitos de corrido", "\n Error\n", 0,
-						LONG_MAX, REINTENTOS) == 0))
-		{
-
-			if (localidad > 0)
+			if (getString(empresa, limitCarac, "Ingrese Empresa", "\n Error\n", REINTENTOS) == 0
+							&& getStringDireccion(direccion, limitCarac, "Ingrese Direccion", "\n Error\n",
+							REINTENTOS) == 0
+							&& (getNumeroCuit(&cuit, "Ingrese cuit, 11 digitos de corrido", "\n Error\n", 0,
+							LONG_MAX, REINTENTOS) == 0))
 			{
 
-				auxContador++;
+				if (localidad > 0)
+				{
 
-				retorno = addEmployee(lista, tam, auxContador, empresa, direccion, localidad, cuit);
+					auxContador++;
+
+					retorno = addEmployee(lista, tam, auxContador, empresa, direccion, localidad, cuit);
+				}
+
 			}
 
 		}
-		else
-		{
-			printf("\n Supero los intentos, No pudo cargar\n");
 
-		}
 	}
 	*contadorId = auxContador;
 	return retorno;
@@ -165,57 +167,55 @@ int CargarCliente(eClientes lista[], eLocalidad listLocalidad[], int tamLocalida
 int mostrarclientesConPedidoPendiente(eClientes* listaClientes, eLocalidad* listaLocalidad,
 				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos)
 {
-	int retorno = -1;
-	int localidad;
+	int rtn = -1;
 
 	if (listaClientes != NULL && tamClientes > 0
-					&& BuscarPorEstadoPedido(listaPedidos, tamPedidos, PENDIENTE) != -1)
+					&& BuscarPorEstadoPedido(listaPedidos, tamPedidos, PENDIENTE) != -1
+					&& listaLocalidad != NULL && tamLocalidad > 0)
 	{
-
-		for (int i = 0; i < tamClientes; i++) //clientes
-
+		for (int i = 0; i < tamLocalidad; i++)
 		{
-			if (listaClientes[i].isEmpty == CARGADO)
+			if ((listaLocalidad[i].isEmpty == CARGADO
+							&& RecorreClientes_cuentaPedidos(listaClientes, listaLocalidad[i], listaPedidos,
+											tamLocalidad, tamClientes, tamPedidos) != -1))
 			{
-				int espacioEnPEdido;
-				espacioEnPEdido = BuscarClienteEnPedido(listaPedidos, listaClientes[i], tamPedidos,
-								tamClientes);
-
-				if (espacioEnPEdido != -1 && listaPedidos[espacioEnPEdido].isEmpty == PENDIENTE)
-				{
-
-					printf("                 CLIENTE\n"
-									"----------------------------------------------------------\n"
-									"ID   EMPRESA    DIRECCION   LOCALIDAD   CUIT\n"
-									"-----------------------------------------------------------\n");
-
-					localidad = buscarClientesEnLocalidad(listaClientes[i], listaLocalidad, tamLocalidad,
-									tamClientes);
-
-					if (localidad != -1)
-					{
-
-						MostrarEmpleado(listaClientes[i], listaLocalidad[localidad]); // listaclientes y localidad(lugar q coincide)
-						{
-
-							printf("PEDIDO PENDIENTES\n"
-											"----------------------------------------------------------\n"
-											"IDPEDIDO         CUIT          DIRECCION       KILOS                  \n"
-											"-----------------------------------------------------------\n");
-
-////
-							buscarClienteEnPedido_Mostrar(listaPedidos, tamPedidos, listaClientes, tamClientes,
-											i);
-
-						}
-						retorno = 0;
-					}
-				}
+				rtn = 0;
 
 			}
+
 		}
 	}
-	return retorno;
+	return rtn;
+}
+int RecorreClientes_cuentaPedidos(eClientes* listaClientes, eLocalidad listaLocalidad,
+				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos)
+{
+	int rtn = -1;
+	int contador = 0;
+	for (int j = 0; j < tamClientes; j++)
+	{
+		if (listaClientes[j].isEmpty == CARGADO
+						&& listaLocalidad.idLocalidad == listaClientes[j].idLocalidad)
+		{
+			contador = contadorPedidos(listaClientes[j], tamClientes, listaPedidos, tamPedidos,
+			PENDIENTE);
+
+			if (contador > 0)
+			{
+				printf("                \n"
+								"----------------------------------------------------------\n"
+								"ID   EMPRESA    DIRECCION   LOCALIDAD   CUIT\n"
+								"-----------------------------------------------------------\n");
+				MostrarEmpleado(listaClientes[j], listaLocalidad);
+				printf("cantidad de pedidos pendientes: %d\n", contador);
+				contador = 0;
+				rtn = 0;
+
+			}
+
+		}
+	}
+	return rtn;
 }
 int buscarClienteEnPedido_Mostrar(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClientes,
 				int tamClientes, int espacioEnCLiente)
@@ -290,15 +290,14 @@ int removeCliente(eClientes* list, int tamClientes, int id)
 	int retorno = -1;
 	int remoIde;
 	int confirmacion;
-	printf("entro");
+
 	remoIde = buscarPorId(list, tamClientes, id);
 	if (getNumero(&confirmacion, "ingrese 1 para confirmar 0 para cancelar", "error", 0, 1,
-					REINTENTOS) != -1)
+	REINTENTOS) != -1)
 	{
 
 		if (confirmacion == 1)
 		{
-			printf("entro");
 
 			if (remoIde != -1 && list[remoIde].isEmpty == CARGADO)
 			{
@@ -342,25 +341,22 @@ int modificarCliente(eClientes* list, eLocalidad* listaLocalidad, int tamLocalid
 	int retorno = -1;
 	int modifIde;
 	int idModificacion;
+	int confirmacion;
 	if (buscarlistaCargada(list, tamClientes) == 1)
 	{
 
 		if (getNumero(&idModificacion, "\n ingrese id a modificar ", "no se puedo modifcar", 1,
-		INT_MAX, 3) != 0)
+		INT_MAX, 3) != -1
+						&& getNumero(&confirmacion, "ingrese 1 para confirmar 0 para cancelar", "error", 0, 1,
+						REINTENTOS) != -1 && confirmacion != 0)
 		{
-			printf("\n"
-							"supero el maximo de intentos");
-		}
-		else
-		{
-			/*modificarCliente(list, listaLocalidad, LOCALIDADES, CLIENTES, idModificacion, TAMCARACTER,
-			 &contadorLocalidad);*/
 			modifIde = buscarPorId(list, tamClientes, idModificacion);
 			if (modifIde != -1 && list[modifIde].isEmpty == CARGADO)
 			{
-				if (getString(empresa, limitCarac, "empresa", "\n Error\n", REINTENTOS) == 0
-								&& getString(direccion, limitCarac, "direccion", "\n Error\n", REINTENTOS) == 0
-								&& (getNumeroCuit(&cuit, "ingrese cuit, 11 digitos de corrido", "\n Error\n", 0,
+				if (getString(empresa, limitCarac, "ingrese nombre de empresa: ", "\n Error\n", REINTENTOS)
+								== 0 && getStringDireccion(direccion, limitCarac, "Ingrese Direccion", "\n Error\n",
+				REINTENTOS) == 0
+								&& (getNumeroCuit(&cuit, "ingrese cuit, 11 digitos de corrido :", "\n Error\n", 0,
 								LONG_MAX, REINTENTOS) == 0))
 				{
 					printLocalidades(listaLocalidad, tamLocalidad);
@@ -387,11 +383,7 @@ int modificarCliente(eClientes* list, eLocalidad* listaLocalidad, int tamLocalid
 					list[modifIde].cuit = cuit;
 					retorno = 0;
 				}
-				else
-				{
-					printf("\n supero los intentos, No pudo cargar\n");
 
-				}
 			}
 
 		}
@@ -401,17 +393,21 @@ int modificarCliente(eClientes* list, eLocalidad* listaLocalidad, int tamLocalid
 	return retorno;
 }
 
-int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes, eAuxiliar* listaAuxiliar)
+int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes,
+				eAuxiliar* listaAuxiliar)
 {
 	int retorno = -1;
-
-	for (int i = 0; i < tamClientes; i++)
+	if (listaClientes != NULL && tamClientes > 0)
 	{
-		if (listaClientes[i].isEmpty == CARGADO)
+
+		for (int i = 0; i < tamClientes; i++)
 		{
-			listaAuxiliar[i].contador2 = 0;
-			listaAuxiliar[i].id = listaClientes[i].id;
-			retorno = 0;
+			if (listaClientes[i].isEmpty == CARGADO)
+			{
+				listaAuxiliar[i].contador2 = 0;
+				listaAuxiliar[i].id = listaClientes[i].id;
+				retorno = 0;
+			}
 		}
 	}
 
@@ -420,49 +416,49 @@ int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes, eA
 int ClienteConMasPedidosPorEstado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
 				int tamPedidos, int estado, char* mensaje)
 {
-	eAuxiliar contadorPedidos[tamClientes];
+	eAuxiliar auxContadorPedidos[tamClientes];
 	int retorno;
-
 	int bandera;
 	int maximo;
 	//int espacioEnCliete;
 	retorno = -1;
 	bandera = 1;
 
-	cargareAuxiliarConListaCliente(listaClientes, tamClientes, contadorPedidos);
-
-
-	for (int i = 0; i < tamClientes; ++i)
+	if (cargareAuxiliarConListaCliente(listaClientes, tamClientes, auxContadorPedidos) != -1
+					&& listaPedidos != NULL && tamPedidos > 0)
 	{
-		if (listaClientes[i].isEmpty == CARGADO)
+
+		for (int i = 0; i < tamClientes; ++i)
 		{
-			contarPedidosPorCliente(listaPedidos, tamPedidos, estado, contadorPedidos, i);
+			if (listaClientes[i].isEmpty == CARGADO)
+			{
+				auxContadorPedidos[i].contador2 = contarPedidosPorClienteAux(listaPedidos, tamPedidos,
+								estado, auxContadorPedidos[i]);
+			}
+			//busca maximo
+			if ((auxContadorPedidos[i].contador2 > maximo || bandera)
+							&& listaClientes[i].isEmpty == CARGADO)
+			{
+
+				maximo = auxContadorPedidos[i].contador2;
+
+				bandera = 0;
+			}
 
 		}
-		//busca maximo
-		if ((contadorPedidos[i].contador2 > maximo || bandera) && listaClientes[i].isEmpty == CARGADO)
+		printf(mensaje);
+
+		if (buscaMaximoEnClientes_Muestra(listaClientes, auxContadorPedidos, maximo, tamClientes) != -1)
 		{
-
-			maximo = contadorPedidos[i].contador2;
-
-			bandera = 0;
+			retorno = 0;
 		}
-
 	}
-	printf(mensaje);
-	//// funcion
-	///
-	if( buscaMaximoEnClientes_Muestra(listaClientes, contadorPedidos, maximo, tamClientes)!=-1)
-	{
-		retorno=0;
-	}
-
-
 
 	return retorno;
 }
 
-int buscaMaximoEnClientes_Muestra(eClientes* listaClientes,eAuxiliar* contadorPedidos,int maximo ,int tamClientes )
+int buscaMaximoEnClientes_Muestra(eClientes* listaClientes, eAuxiliar* contadorPedidos, int maximo,
+				int tamClientes)
 {
 	int rtn = -1;
 	for (int i = 0; i < tamClientes; ++i)
@@ -486,21 +482,21 @@ int buscaMaximoEnClientes_Muestra(eClientes* listaClientes,eAuxiliar* contadorPe
 	return rtn;
 }
 
-int contarPedidosPorCliente(ePedidos* listaPedidos, int tamPedidos, int estado, eAuxiliar* listaAuxiliar,
-				int espacioEnPedido)
+int contarPedidosPorClienteAux(ePedidos* listaPedidos, int tamPedidos, int estado,
+				eAuxiliar listaAuxiliar)
 {
-	int retorno = -1;
+
+	int contador = 0;
 	for (int j = 0; j < tamPedidos; ++j)
 	{
-		if (listaPedidos[j].isEmpty == estado
-						&& (listaAuxiliar[espacioEnPedido].id == listaPedidos[j].idClientes))
+		if (listaPedidos[j].isEmpty == estado && (listaAuxiliar.id == listaPedidos[j].idClientes))
 		{
-			listaAuxiliar[espacioEnPedido].contador2++;
+
+			contador++;
 			//	printf("contador %d\n",listaAuxiliar.contador2);
-			retorno = 0;
 
 		}
 	}
-	return retorno;
+	return contador; //contador
 }
 
