@@ -29,12 +29,35 @@ typedef struct
 
 } ePedidos;
 
-
+/// @param listaPedidos   cuanta los clientes con pedidos completados
+/// @param tamPedidos
+/// @param listaClientes
+/// @param tamClientes
+/// @param auxContadorClientes se pasa por puntero el contador de pedidos.
+/// @return -1 error 0 correcto
 int contClientesPedidosCompletadosPP(ePedidos* listaPedidos, int tamPedidos,
 				eClientes* listaClientes, int tamClientes,float* auxContadorClientes);
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param listaAux
+/// @param auxContadorKilos suma los auxiliares contador .
+/// @return -1 error 0 correcto
 int sumarContadoresAux(ePedidos* listaPedidos, int tamPedidos, eAuxiliar* listaAux, float* auxContadorKilos);
+
+/// @param listaPedidos carga el auxiliar con la lista de pedidos para contar los pp
+/// @param tamPedidos
+/// @param listaClientes
+/// @param tamClientes
+/// @param listaAux
+/// @return
 int cargarAuxilarPedidos(ePedidos* listaPedidos, int tamPedidos, eClientes* listaClientes,
 				int tamClientes, eAuxiliar* listaAux);
+/// @param listaPedidos  muestra los pedidos pendientes o completados
+/// @param listaClientes
+/// @param tamPedidos
+/// @param tamClientes
+/// @param espacioEnPedido dependiendo el pedido enviado los muestra
+/// @return -1 error 0 correcto
 int mostrarPedidoPendiente_Completado(ePedidos* listaPedidos, eClientes* listaClientes,
 				int tamPedidos, int tamClientes, int espacioEnPedido);
 /// @param lista carga una lista de pedidos

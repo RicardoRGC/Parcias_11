@@ -15,21 +15,81 @@
 #define LOCALIDADES 100
 #include "Pedidos.h"
 #include "auxiliar.h"
+#include "Clientes.h"
+
+/// @param listaCliente busca por el id de cliente y borra el pedido
+/// @param listaPedidos
+/// @param tamPedidos
+/// @return -1 error 0 correcto
+int borrarPedidoPorIdcliente(eClientes listaCliente,ePedidos* listaPedidos,int tamPedidos);
+/// @param listaClientes recorre la lista y cuenta los pedidos pendientes
+/// @param listaLocalidad
+/// @param listaPedidos
+/// @param tamLocalidad
+/// @param tamClientes
+/// @param tamPedidos
+/// @return
 int RecorreClientes_cuentaPedidos(eClientes* listaClientes, eLocalidad listaLocalidad,
 				ePedidos* listaPedidos, int tamLocalidad, int tamClientes, int tamPedidos);
-int contadorPedidos(eClientes listaClientes, int tamCliente, ePedidos* listaPedidos,
+/// @param listaClientes
+/// @param tamCliente
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param estado
+/// @return
+int buscaEnPedidosYCuenta(eClientes listaClientes, int tamCliente, ePedidos* listaPedidos,
 				int tamPedidos, int estado);
+/// @param listaClientes
+/// @param contadorPedidos
+/// @param maximo
+/// @param tamClientes
+/// @return
 int buscaMaximoEnClientes_Muestra(eClientes* listaClientes,eAuxiliar* contadorPedidos,int maximo ,int tamClientes );
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param listaClientes
+/// @param tamClientes
+/// @param espacioEnCLiente
+/// @return
 int buscarClienteEnPedido_Mostrar(ePedidos* listaPedidos,int tamPedidos,eClientes* listaClientes,int tamClientes,
 				int espacioEnCLiente);
+/// @param listaClientes
+/// @param tamCliente
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param listaLocalidad
+/// @param espacioLocalidad
+/// @param estado
+/// @return
 int contadorPedidosPorEstado(eClientes* listaClientes,int tamCliente,ePedidos* listaPedidos,int tamPedidos,
-				eLocalidad* listaLocalidad,int espacioLocalidad,int estado
+				eLocalidad listaLocalidad,int estado
 				);
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param estado
+/// @param listaAuxiliar
+/// @return
 int contarPedidosPorClienteAux(ePedidos* listaPedidos, int tamPedidos,
 				int estado, eAuxiliar listaAuxiliar);
+/// @param listaClientes
+/// @param tamClientes
+/// @param listaAuxiliar
+/// @return
 int cargareAuxiliarConListaCliente(eClientes* listaClientes, int tamClientes, eAuxiliar* listaAuxiliar);
+/// @param listaClientes
+/// @param tamClientes
+/// @param listaPedidos
+/// @param tamPedidos
+/// @param estado
+/// @param mensaje
+/// @return
 int ClienteConMasPedidosPorEstado(eClientes* listaClientes, int tamClientes, ePedidos* listaPedidos,
 				int tamPedidos,int estado,char* mensaje);
+/// @param listaClientes
+/// @param tamClientes
+/// @param listaPedidos
+/// @param tamPedidos
+/// @return
 int ClienteMasPedidosPendiente(eClientes* listaClientes,int tamClientes,ePedidos* listaPedidos,int tamPedidos);
 
 /// @param listaLocalidad muestra una localidad y los pedidos pendientes
@@ -76,7 +136,7 @@ int CargarCliente(eClientes lista[], eLocalidad listLocalidad[], int tamLocalida
 /// @param tamLocalidad tamaño de estruccura 2
 /// @param largo estrucctura 1
 /// @return retorna -1 error 0 correcto
-int mostarclientes(eClientes* lista, eLocalidad* listaLocalidad, int tamLocalidad, int largo);
+int mostarclientes(eClientes* lista, eLocalidad* listaLocalidad,  int tamCliente,int tamLocalidad);
 /// @param list lista a mostrar
 /// @param listaLocalidad lista a mostrar
 void MostrarEmpleado(eClientes list, eLocalidad listaLocalidad);
@@ -85,13 +145,12 @@ void MostrarEmpleado(eClientes list, eLocalidad listaLocalidad);
 /// @param tamLocalidad tamaño de lista donde se va buscar
 /// @param largo tamaño de lista q se va buscar
 /// @return retorna el indice de la coincidencia
-int buscarClientesEnLocalidad(eClientes lista, eLocalidad* listaLocalidad, int tamLocalidad,
-				int largo);
+int buscarClientesEnLocalidad(eClientes lista, eLocalidad* listaLocalidad, int tamLocalidad);
 /// @param list lista de donde se va elimina el id
 /// @param tamClientes tamaño de lista
 /// @param id id a eliminar
 /// @return
-int removeCliente(eClientes* list, int tamClientes, int id);
+int removeCliente(eClientes* list, int tamClientes, int id,ePedidos* listaPedidos,int tamPedidos);
 /// @param list busca en la lista un id cargado
 /// @param len tamaño
 /// @param id a buscar

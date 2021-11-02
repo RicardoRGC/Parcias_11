@@ -31,14 +31,14 @@
 int main(void)
 {
 	setbuf(stdout, NULL);
-	int contadorID = 5;
-	int contadorLocalidadID = 9;
+	int contadorIDCliente = 5;
+	int contadorLocalidadID = 8;
 	int contadorPedidos = 0;
 	int remover;
 	int opcion;
 	float KilosTotalesPP;
 	int opcion13;
-	int idlocali;
+	int idlocalidad;
 	int idPedidoCliente; ///probar con estatica
 
 	eClientes listaClientes[CLIENTES];
@@ -50,12 +50,10 @@ int main(void)
 	HardcodeClientes(listaClientes, CLIENTES);
 	HardcodePedidos(listaPedidos, PEDIDOS);
 
-
 	CargarLocalidadesPorDefecto(listaLocalidades, LOCALIDADES);
 	do
 	{
-
-		getNumero(&opcion, "\n1. ALTAS "
+		if (getNumero(&opcion, "\n1. ALTAS "
 						"\n2. MODIFICAR "
 						"\n3. BAJA"
 						"\n4. PEDIDOS"
@@ -68,28 +66,34 @@ int main(void)
 						"\n11 cliente mas pedidos pendientes"
 						"\n12 cliente mas pedidos completado"
 						"\n13 modificar o eliminar localidad"
-						"\n0. Salir\n", "error", 0, 13, REINTENTOS);
+						"\n0. Salir\n", "error", 0, 13, REINTENTOS) == -1)
+		{
+			printf("Error al cargar");
+
+		}
 
 		switch (opcion)
 		{
 		case 1:
 
-			if (CargarCliente(listaClientes, listaLocalidades, LOCALIDADES, CLIENTES, &contadorID,
+			if (CargarCliente(listaClientes, listaLocalidades, LOCALIDADES, CLIENTES, &contadorIDCliente,
 							&contadorLocalidadID, TAMCARACTER) == -1)
 			{
 				printf("ERROR AL CARGAR");
 			}
 			else
 			{
-				mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES);
+				mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES);
 			}
 			break;
 		case 2:
-			if (BuscarPorEstadoEnCliente(listaClientes, CLIENTES, CARGADO) != -1&&
-							mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES)!=-1&&
-							modificarCliente(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES, TAMCARACTER,
-															&contadorLocalidadID)!=-1&&
-															mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES)!=-1)
+			if (BuscarPorEstadoEnCliente(listaClientes, CLIENTES, CARGADO) != -1
+							&& mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES)
+											!= -1
+							&& modificarCliente(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES,
+											TAMCARACTER, &contadorLocalidadID) != -1
+							&& mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES)
+											!= -1)
 			{
 
 				printf("Modificacion exitosa");
@@ -104,11 +108,12 @@ int main(void)
 		case 3:
 
 			if (buscarlistaCargada(listaClientes, CLIENTES) == 1
-							&& mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES) != -1)
+							&& mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES)
+											!= -1)
 			{
-				if (getNumero(&remover, "ingrese id a eliminar\n", "error\n", 0, contadorID, REINTENTOS)
-								!= -1 && removeCliente(listaClientes, CLIENTES, remover) != -1
-								&& mostarclientes(listaClientes, listaLocalidades, 3, CLIENTES) != -1)
+				if (getNumero(&remover, "ingrese id a eliminar\n", "error\n", 0, contadorIDCliente, REINTENTOS)
+								!= -1 && removeCliente(listaClientes, CLIENTES, remover, listaPedidos, PEDIDOS) != -1
+								&& mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES) != -1)
 				{
 
 					printf("Borrado exitoso");
@@ -128,10 +133,10 @@ int main(void)
 			break;
 		case 4:	//cargar pedido
 
-			if (mostarclientes(listaClientes, listaLocalidades, contadorLocalidadID, CLIENTES) != -1
+			if (mostarclientes(listaClientes, listaLocalidades, CLIENTES,LOCALIDADES) != -1
 							&& buscarlistaCargada(listaClientes, CLIENTES) == 1
 							&& !getNumero(&idPedidoCliente, "ingrese id cliente", " ERROR Id Incorrecto \n ", 0,
-											contadorID,
+											contadorIDCliente,
 											REINTENTOS))
 			{
 				if (CargarPedidos(listaPedidos, PEDIDOS, &contadorPedidos, listaClientes, CLIENTES,
@@ -195,8 +200,9 @@ int main(void)
 			break;
 		case 9:
 			if (BuscarPorEstadoPedido(listaPedidos, PEDIDOS, PENDIENTE) != -1
-							&& printLocalidades(listaLocalidades, LOCALIDADES)!=-1
-							&&getNumero(&idlocali, "ingrese id localidad", "error", 1, LOCALIDADES, REINTENTOS)!=-1)
+							&& printLocalidades(listaLocalidades, LOCALIDADES) != -1
+							&& getNumero(&idlocalidad, "ingrese id localidad", "error", 1, contadorLocalidadID, REINTENTOS)
+											!= -1)
 			{
 
 				printf("                  LISTA DE LOCALIDADES\n"
@@ -205,8 +211,8 @@ int main(void)
 								"-----------------------------------------------------------\n");
 
 			}
-			if(	locadidadPedidosPendientes(listaLocalidades, listaClientes, listaPedidos, LOCALIDADES,
-							CLIENTES, PEDIDOS,idlocali)==-1)
+			if (locadidadPedidosPendientes(listaLocalidades, listaClientes, listaPedidos, LOCALIDADES,
+			CLIENTES, PEDIDOS, idlocalidad) == -1)
 			{
 				printf("error al cargar");
 			}

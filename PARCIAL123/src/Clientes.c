@@ -15,6 +15,7 @@
 #define REINTENTOS 3
 #define VACIO 0
 #define CARGADO 1
+//static int nuevoIDClientes();
 /////////////////////////////////////////////////////////////////////////
 ///
 void HardcodeClientes (eClientes lista[],int len)
@@ -81,8 +82,12 @@ int buscarlistaCargada(eClientes* lista, int tam)
 
 	return index;
 }
-
-
+/*static int nuevoIDClientes()
+{
+	static int idCliente = 0;
+	idCliente++;
+	return idCliente;
+}*/
 
 int addEmployee(eClientes* list, int len, int id, char empresa[],char direccion[],int localidad,
 				double cuit)
